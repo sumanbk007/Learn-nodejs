@@ -57,4 +57,50 @@ router.get("/:workType", async (req, res) => {
   }
 });
 
+// Put method to update the person data
+
+router.put("/:id", async (req, res) => {
+  try {
+    const personId = req.params.id;
+    const updatedPersonData = req.body;
+
+    const response = await Person.findByIdAndUpdate(
+      personId,
+      updatedPersonData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!response) {
+      return res.status(404).json({ Error: "Person with the id not found!!" });
+    }
+
+    console.log("Data updated");
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//Delete operation route
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const personId = req.params.id;
+
+    const response = await Person.findByIdAndDelete(personId);
+
+    if (!response) {
+      return res.status(404).json({ Error: "Person with the id not found!!" });
+    }
+
+    console.log("Data deleted");
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 module.exports = router;
